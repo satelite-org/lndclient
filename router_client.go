@@ -240,6 +240,10 @@ type SendPaymentRequest struct {
 	// satoshis.
 	Amount btcutil.Amount
 
+	// Amount is the value of the payment to send through the network in
+	// satoshis.
+	AmountMsat lnwire.MilliSatoshi
+
 	// PaymentHash is the r-hash value to use within the HTLC extended to
 	// the first hop.
 	PaymentHash *lntypes.Hash
@@ -379,7 +383,7 @@ func (r *routerClient) SendPayment(ctx context.Context,
 
 	rpcCtx := r.routerKitMac.WithMacaroonAuth(ctx)
 	rpcReq := &routerrpc.SendPaymentRequest{
-		FeeLimitSat:      int64(request.MaxFee),
+		// FeeLimitSat:      int64(request.MaxFee),
 		FeeLimitMsat:     int64(request.MaxFeeMsat),
 		PaymentRequest:   request.Invoice,
 		TimeoutSeconds:   int32(request.Timeout.Seconds()),
@@ -422,7 +426,8 @@ func (r *routerClient) SendPayment(ctx context.Context,
 	// payment parameters.
 	if request.Invoice == "" {
 		rpcReq.Dest = request.Target[:]
-		rpcReq.Amt = int64(request.Amount)
+		// rpcReq.Amt = int64(request.Amount)
+		rpcReq.AmtMsat = int64(request.AmountMsat)
 		rpcReq.PaymentHash = request.PaymentHash[:]
 		rpcReq.FinalCltvDelta = int32(request.FinalCLTVDelta)
 
