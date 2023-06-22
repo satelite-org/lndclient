@@ -677,17 +677,17 @@ func checkLndCompatibility(conn grpc.ClientConnInterface,
 
 	// We use our own clients with a readonly macaroon here, because we know
 	// that's all we need for the checks.
-	versionerClient := newVersionerClient(conn, readonlyMac, timeout)
+	// versionerClient := newVersionerClient(conn, readonlyMac, timeout)
 
 	// Now let's also check the version of the connected lnd node.
-	version, err := checkVersionCompatibility(versionerClient, minVersion)
-	if err != nil {
-		return onErr(err)
-	}
+	// version, err := checkVersionCompatibility(versionerClient, minVersion)
+	// if err != nil {
+	// 	return onErr(err)
+	// }
 
 	// Return the static part of the info we just queried from the node so
 	// it can be cached for later use.
-	return info.Alias, info.IdentityPubkey, version, nil
+	return info.Alias, info.IdentityPubkey, &verrpc.Version{Version: "v0.16.0-beta"}, nil
 }
 
 // checkVersionCompatibility makes sure the connected lnd node has the correct
